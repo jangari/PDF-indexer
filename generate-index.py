@@ -6,16 +6,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("input_file")
 parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset", dest="OFFSET", default=0)
 args = parser.parse_args()
-#print args.echo
 
 index={}
 comments_file=open(args.input_file,'r')
 OFFSET=args.OFFSET
-
-# if args.OFFSET:
-#     OFFSET=args.OFFSET
-# else:
-#     OFFSET=0
 
 for line in comments_file:
     v,k = line.split('\t') # Split index reference into page ref and text
