@@ -1,16 +1,26 @@
 #!/usr/local/bin/python
 
 import re, sys
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("input_file")
+parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset", dest="OFFSET", default=0)
+args = parser.parse_args()
+#print args.echo
 
 index={}
+comments_file=open(args.input_file,'r')
+OFFSET=args.OFFSET
 
-input_file=sys.argv[1] # Load file from argument
-comments_file=open(input_file,'r')
+# if args.OFFSET:
+#     OFFSET=args.OFFSET
+# else:
+#     OFFSET=0
 
 for line in comments_file:
     v,k = line.split('\t') # Split index reference into page ref and text
     k=k.rstrip() # Strip any whitespace
-    v=int(v)-8
+    v=int(v)-OFFSET
 
     pattern = re.compile("(.*)\s+\(([0-9]+-[0-9]+)\)")
     if re.match(pattern,k):
