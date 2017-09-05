@@ -89,6 +89,12 @@ comedy | satire	11, 25
 computing	34-37
 ```
 
+### Command-line support for front-matter offset
+
+A known-issue is that PDF comments contain page references beginning from the start of the PDF file, and those page numbers may differ from the actual page numbers due to the presence of front-matter. PDF Indexer has an optional argument `-o/--offset` which sets the amount of frontmatter offset to account for. A negative number may also be entered to account for PDF files that do not start at page 1.
+
+A future version of this script would calculate the offset needed by parsing the PDF document.
+
 ## Limitations
 
 ### Page ranges cannot sort
@@ -103,12 +109,6 @@ This data structure would allow for the list of tuples to be sorted accurately, 
 As mentioned above, there is no built-in support for subheadings, but see above for a simple workaround. A future version will accept the `|`-separated comment as suggested above, and render the output with a top-level heading with subheadings.
 
 ## To-Do
-
-### Command-line support for front-matter offset
-
-A known-issue is that PDF comments contain page references beginning from the start of the PDF file, and those page numbers may differ from the actual page numbers due to the presence of front-matter. The script has an offset variable that can be set by the user. In a future version, this offset will be 0 by default, but may be set by the user at runtime using a flag.
-
-A yet-further off version of this script would calculate the offset needed by parsing the PDF document.
 
 ### Support for multiple index styles
 
