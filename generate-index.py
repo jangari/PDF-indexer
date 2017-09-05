@@ -31,7 +31,7 @@ for line in comments_file:
     else:
         index[k]=[(v_sort,v)] # Add dict entry if not already present
 
-for k in sorted(index): # Sort dict by key
+for k in sorted(index, key=lambda s: s.lower()): # Sort dict by key
     index[k].sort() # Sort each value list numerically
     vlist = []
     for vtuple in index[k]: # Pull page refs out of tuples and create list
