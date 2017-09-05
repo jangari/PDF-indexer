@@ -24,7 +24,7 @@ Here is a very brief example of a list of index references.
 15	satire
 ```
 
-This kind of format is not suitable for an index. An index would have an alphabetically sorted list of index terms (such as **comedy**, **satire** in the example here) followed by an exhaustive list of page numbers. PDF Indexer generates that format from the exported PDF annotations. The above, therefore, will generate:
+This kind of format is not suitable for an index. An index is an alphabetically sorted list of index terms (such as *comedy*, *satire* in the example here) followed by an exhaustive list of page numbers or ranges. PDF Indexer generates that format from the exported PDF annotations. The above, therefore, will generate:
 
 ```
 comedians	13
@@ -36,23 +36,27 @@ The user will then need to undertake some post-processing to prepare this text f
 
 ### Synopsis
 
-`python generate-index.py input_file`
+`python generate-index.py INPUT_FILE [-o/--offset OFFSET]`
 
 The output will be printed to the shell or can be redirected to a file.
 
 ### Page ranges
 
-Page ranges are complex for indexes, and publishers vary in the expected style. PDF Indexer supports page ranges only through a manual process: the page range should be entered into the annotation in parentheses. PDF Indexer will use this page range instead of the page number associated with the annotation. This has the corollary effect that page range index references need not be comments on the actual section of the page proof PDF; they could go anywhere. 
+Page ranges are complex for indexes, and publishers vary in the expected style (for example, eliding common numbers, 134-9). PDF Indexer supports page ranges only through a manual process: the page range should be entered into the annotation in parentheses. PDF Indexer will use this page range instead of the page number associated with the annotation. If your publisher prefers elided page ranges, enter the elided page range into the PDF comment. 
+
+The fact that the page range string overrides the actual page number of the comment has the corollary effect that page range index references need not be comments on the actual section of the page proof PDF; they could go anywhere. 
 
 A comment in a PDF that pertains to a page range may look like this (and for completeness, let's suppose it occurs on page 10 of the PDF):
 
 `humor theory (10-25)`
 
-PDF Indexer will use the string `10-25` instead of the supplied page number `10` as the value for that index. The page range will be inserted into the list of page numbers as a string, and will thus not be correctly numerically sorted with respect to the rest of the page numbers. So the TO-DO section for a potential future fix.
+PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. The regular expression for this capture is `.*\s+\(([0-9]+-[0-9]+)\)`. When PDF Indexer comes across index text matching this expression, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
+
+As a limitation of page ranges, the page range will be inserted into the list of page numbers as a string, and will thus not be correctly numerically sorted with respect to the rest of the page numbers and will need to be sorted manually as a post-processing job. See the limitations section for a potential future fix.
 
 ### Subheadings
 
-Back-of-book indexes often contain headings of index references. The above example might be output as follows (extended for other headings not within comedy):
+Back-of-book indexes often contain subheadings of index references. The above example might be output as follows (extended for other headings not within comedy):
 
 ```
 Australia	65
@@ -108,8 +112,26 @@ This data structure would allow for the list of tuples to be sorted accurately, 
 
 As mentioned above, there is no built-in support for subheadings, but see above for a simple workaround. A future version will accept the `|`-separated comment as suggested above, and render the output with a top-level heading with subheadings.
 
-## To-Do
-
-### Support for multiple index styles
+### No support for multiple index styles
 
 Currently only a single output style is supported, with index references separated from page number lists with a tab character. Support for different styles (particularly the run-on style) may be added at a later stage. This only practically affects subheadings at this stage.  
+
+### No support for cross-references
+
+PDF Indexer does not currently support cross-referencing. Cross-references within the index (such as *New Holland	see Australia*) must be entered manually as a post-processing step. It is not clear that there is much benefit to including this functionality, since providing support for cross-references would not save the user any time, as they would have to be manually annotated in the PDF anyway. The only potential for efficiency here is if PDF Indexer automatically provided cross references to subheadings, where a PDF annotation such as:
+
+```
+11	comedy | satire
+```
+
+might yield:
+
+```
+comedy
+[...]
+    satire  11
+[...]
+satire  see comedy
+```
+
+However it is not clear that this behaviour would be desired. It would also be contingent on the implementation of subheadings.
