@@ -54,7 +54,7 @@ humor theory	10
 satire	11, 15
 ```
 
-The user will then need to undertake some post-processing to prepare this text for their publisher. They will need to separate it into alphabetic blocks, correct the ordering of page ranges (see limitations below), and construct any desired (sub)-heading hierarchy. They should also conduct thorough quality control before submitting the index to their publisher.
+The user will then need to undertake some post-processing to prepare this text for their publisher. They will need to separate it into alphabetic blocks, construct any desired (sub)-heading hierarchy, and they should also conduct thorough quality control before submitting the index to their publisher. PDF Indexer only collates and sorts the indexes from a single page reference per line, to a proper index style with an index reference and a list of page references.
 
 ### Synopsis
 
