@@ -15,18 +15,25 @@ for line in comments_file:
     v,k = line.split('\t') # Split index reference into page ref and text
     k=k.rstrip() # Strip any whitespace
     v=int(v)-OFFSET
+    v_sort=v # For single pages, v_sort is simply v.
 
     pattern = re.compile("(.*)\s+\(([0-9]+-[0-9]+)\)")
     if re.match(pattern,k):
         match = pattern.search(k)
         k = match.group(1)
         v = match.group(2)
+        vp = re.compile("([0-9]+)-") # Parse the start number of the page range to be the sort value
+        vm = vp.search(v)
+        v_sort = int(vm.group(1))
     if index.has_key(k): # Don't duplicate entries
-        if not v in index[k]:
-            index[k].append(v) # Don't duplicate pages
+        if not (v_sort,v) in index[k]:
+            index[k].append((v_sort,v)) # Don't duplicate pages
     else:
-        index[k]=[v] # Add dict entry if not already present
+        index[k]=[(v_sort,v)] # Add dict entry if not already present
 
 for k in sorted(index): # Sort dict by key
     index[k].sort() # Sort each value list numerically
-    print k+'\t'+', '.join(map(str, index[k]))
+    vlist = []
+    for vtuple in index[k]: # Pull page refs out of tuples and create list
+        vlist.append(vtuple[1])
+    print k+'\t'+', '.join(map(str, vlist)) # Print the list of page refs

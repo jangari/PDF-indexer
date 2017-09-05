@@ -74,7 +74,7 @@ A comment in a PDF that pertains to a page range may look like this (and for com
 
 PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. The regular expression for this capture is `.*\s+\(([0-9]+-[0-9]+)\)`. When PDF Indexer comes across index text matching this expression, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
 
-As a limitation of page ranges, the page range will be inserted into the list of page numbers as a string, and will thus not be correctly numerically sorted with respect to the rest of the page numbers and will need to be sorted manually as a post-processing job. See the limitations section for a potential future fix.
+So that the sort works properly, PDF Indexer extracts the first page number of the range and uses it as the sort value in the tuple. When outputting page numbers, the tuples in the list are sorted numberically by this sort value, and the page reference value is what is ultimately printed.
 
 ### Subheadings
 
@@ -124,11 +124,8 @@ A future version of this script would calculate the offset needed by parsing the
 ## Limitations
 
 ### Page ranges cannot sort
-As page ranges (such as 10-25) cannot be coerced into an integer, they cannot be sorted within the list of page references. In a future version, each list entry could be a tuple, with a sort key, usually the same as the page number, but for page ranges, the sort key will be filled by the integer of the first part of the range.
 
-`{'comedy | humor theory':[(10,'10'),(10,'10-25')]}`
-
-This data structure would allow for the list of tuples to be sorted accurately, even where the value (the page reference) is a string.
+**This has now been implemented** by refactoring the list of page numbers as a tuple `t`, consisting of a sort value `t[0]` and the page reference `t[1]`. The sort value is used for sorting the list of numbers, and the page reference is what is ultimately printed.
 
 ### No support for subheadings
 
