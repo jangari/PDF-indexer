@@ -161,11 +161,15 @@ Publishers (and authors) differ as to whether they prefer word-by-word alphabeti
   - I, Robot
   - Isaacs
 
+### Note indexing
+
+Indexes pointing to notes are supported in the same manner as page ranges, by using a string page reference in place of the page number as exported from the PDF.
+
+To reference a note, enter the page number for the reference followed by `n` and optionally, the note number if there are multiple notes. E.g.:
+
+`10	computing (10n4)` will be output as `computing	10n4` and `10	computing (10n)` will be output as `computing	10n`. As with page ranges, note references will be sorted accurately on the basis of the page number.
+
 ## Limitations
-
-### Page ranges cannot sort
-
-**This has now been implemented** by refactoring the list of page numbers as a tuple `t`, consisting of a sort value `t[0]` and the page reference `t[1]`. The sort value is used for sorting the list of numbers, and the page reference is what is ultimately printed.
 
 ### No support for subheadings
 

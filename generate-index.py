@@ -20,12 +20,12 @@ for line in comments_file:
     v=int(v)-OFFSET
     v_sort=v # For single pages, v_sort is simply v.
 
-    pattern = re.compile("(.*)\s+\(([0-9]+-[0-9]+)\)")
+    pattern = re.compile("(.*)\s+\(([0-9]+(n[0-9]+|\-[0-9]+))\)")
     if re.match(pattern,k):
         match = pattern.search(k)
         k = match.group(1)
         v = match.group(2)
-        vp = re.compile("([0-9]+)-") # Parse the start number of the page range to be the sort value
+        vp = re.compile("([0-9]+)(-|n)") # Parse the start number of the page range to be the sort value
         vm = vp.search(v)
         v_sort = int(vm.group(1))
     if index.has_key(k): # Don't duplicate entries
