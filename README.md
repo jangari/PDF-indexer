@@ -64,13 +64,11 @@ The output will be printed to the shell or can be redirected to a file.
 
 ### Page ranges
 
-Page ranges are complex for indexes, and publishers vary in the expected style (for example, eliding common numbers, 134-9). PDF Indexer supports page ranges only through a manual process: the page range should be entered into the annotation in parentheses. PDF Indexer will use this page range instead of the page number associated with the annotation. If your publisher prefers elided page ranges, enter the elided page range into the PDF comment. 
+Page ranges are complex for indexes, and publishers vary in the expected style (for example, eliding common numbers, 134-9). PDF Indexer supports page ranges only through a manual process: the page range should be entered into the annotation in parentheses. PDF Indexer will use this page range instead of the page number associated with the annotation. If your publisher prefers elided page ranges, enter the elided page range explicitly into the PDF comment. 
 
 The fact that the page range string overrides the actual page number of the comment has the corollary effect that page range index references need not be comments on the actual section of the page proof PDF; they could go anywhere. 
 
-A comment in a PDF that pertains to a page range may look like this (and for completeness, let's suppose it occurs on page 10 of the PDF):
-
-`humor theory (10-25)`
+A comment in a PDF that pertains to a page range may look like this `humor theory (10-25)` and will be output as `humor theory	10-25`, and will sort correctly with respect to other page references for that index.
 
 PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. The regular expression for this capture is `.*\s+\(([0-9]+-[0-9]+)\)`. When PDF Indexer comes across index text matching this expression, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
 
