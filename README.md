@@ -58,7 +58,32 @@ The user will then need to undertake some post-processing to prepare this text f
 
 ### Synopsis
 
-`generate-index.py [-h] [-o OFFSET] [-g] [-w] [-l] input_file`
+Help text:
+
+```
+usage: generate-index.py [-h] [-o OFFSET] [-g] [-w] [-l] [-s SEPARATOR] input_file
+
+positional arguments:
+  input_file
+
+optional arguments:
+  -h, --help                              show this help message and exit
+
+  -o OFFSET, --offset OFFSET              Set frontmatter offset for page numbers to be correctly 
+                                          rendered.
+
+  -g, --group                             Display output entries in alphabetic groups separated
+                                          by line breaks and section headings.
+
+  -w, --word-sort                         Sorts entries using word-by-word alphabetic order (de
+                                          Marco > dean).
+
+  -l, --letter-sort                       Sorts entries using letter-by-letter alphabetic order
+                                          (dean > de Marco). True by default.
+
+  -s SEPARATOR, --separator SEPARATOR     Set output field separator between index entry and
+                                          locator. Default is a tab character.
+```
 
 The output will be printed to the shell or can be redirected to a file.
 
