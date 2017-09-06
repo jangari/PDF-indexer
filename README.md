@@ -83,6 +83,9 @@ optional arguments:
 
   -s SEPARATOR, --separator SEPARATOR     Set output field separator between index entry and
                                           locator. Default is a tab character.
+
+  -e, --elide                             Elide numbers in page ranges where possible (excluding
+                                          teens).
 ```
 
 The output will be printed to the shell or can be redirected to a file.
@@ -98,6 +101,12 @@ A comment in a PDF that pertains to a page range may look like this `humor theor
 PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. The regular expression for this capture is `.*\s+\(([0-9]+-[0-9]+)\)`. When PDF Indexer comes across index text matching this expression, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
 
 So that the sort works properly, PDF Indexer extracts the first page number of the range and uses it as the sort value in the tuple. When outputting page numbers, the tuples in the list are sorted numberically by this sort value, and the page reference value is what is ultimately printed.
+
+### Elision of page ranges
+
+With the `-e/--elide` option enabled, PDF Indexer will elide page numbers where possible. The range `123-126` will be elided to `123-6`, `201-203` to `201-3` and so on. Teens are not elided, so `112-118` is elided to `112-18`. 
+
+This output style is disabled by default.
 
 ### Subheadings
 
