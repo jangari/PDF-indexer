@@ -5,6 +5,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("input_file")
 parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset", dest="OFFSET", default=0)
+parser.add_argument("-g", "--group", action="store_true", help="Display output entries in alphabetic groups separated by line breaks and section headings")
 args = parser.parse_args()
 
 index={}
@@ -31,9 +32,16 @@ for line in comments_file:
     else:
         index[k]=[(v_sort,v)] # Add dict entry if not already present
 
+k_prev=None
+
 for k in sorted(index, key=lambda s: s.lower()): # Sort dict by key
+    k_this=k[0].upper()
     index[k].sort() # Sort each value list numerically
     vlist = []
     for vtuple in index[k]: # Pull page refs out of tuples and create list
         vlist.append(vtuple[1])
+    if args.group:
+        if k_this != k_prev:
+            k_prev = k_this
+            print '\n'+k_this
     print k+'\t'+', '.join(map(str, vlist)) # Print the list of page refs

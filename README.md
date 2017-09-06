@@ -115,11 +115,28 @@ comedy | satire	11, 25
 computing	34-37
 ```
 
-### Command-line support for front-matter offset
+### Front-matter offset
 
 A known-issue is that PDF comments contain page references beginning from the start of the PDF file, and those page numbers may differ from the actual page numbers due to the presence of front-matter. PDF Indexer has an optional argument `-o/--offset` which sets the amount of frontmatter offset to account for. A negative number may also be entered to account for PDF files that do not start at page 1.
 
 A future version of this script would calculate the offset needed by parsing the PDF document.
+
+### Grouping output by letter
+
+PDF Indexer supports optional grouping of the output by letter using the flag `-g/--group`. With this flag set, the above example will be output as:
+
+```
+A
+Australia	65
+Argentina	70, 76
+
+C
+comedy | comedians	13
+comedy | humor theory	10, 10-25
+comedy | satire	11, 25
+computing	34-37
+```
+This output style is disabled by default.
 
 ## Limitations
 
