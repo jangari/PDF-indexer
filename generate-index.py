@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
-import re, sys
-import argparse
+import re, argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("input_file")
 parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset for page numbers to be correctly rendered.", dest="OFFSET", default=0)
