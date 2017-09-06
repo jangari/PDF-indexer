@@ -167,6 +167,10 @@ To reference a note, enter the page number for the reference followed by `n` and
 
 `10	computing (10n4)` will be output as `computing	10n4` and `10	computing (10n)` will be output as `computing	10n`. As with page ranges, note references will be sorted accurately on the basis of the page number.
 
+### Custom output separator
+
+PDF Indexer supports a custom output field separator using the `-s/--separator` flag. The default is a tab character, but this could be any string.
+
 ## Limitations
 
 ### No support for subheadings

@@ -8,6 +8,7 @@ parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset", d
 parser.add_argument("-g", "--group", action="store_true", help="Display output entries in alphabetic groups separated by line breaks and section headings")
 parser.add_argument("-w", "--word-sort", action="store_true", help="Sorts entries using word-by-word alphabetic order (de Marco > dean)", default=False, dest="word")
 parser.add_argument("-l", "--letter-sort", action="store_true", help="Sorts entries using letter-by-letter alphabetic order (dean > de Marco)", default=True, dest="letter")
+parser.add_argument("-s", "--separator", type=str, help="Set output field separator between index entry and locator. Default is a tab character.", default="\t", dest="separator")
 args = parser.parse_args()
 
 index={}
@@ -51,4 +52,4 @@ for k in index_sorted:
         if k_this != k_prev:
             k_prev = k_this
             print('\n'+k_this)
-    print(k+'\t'+', '.join(map(str, vlist))) # Print the list of page refs
+    print(k+args.separator+', '.join(map(str, vlist))) # Print the list of page refs
