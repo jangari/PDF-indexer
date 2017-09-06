@@ -6,6 +6,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("input_file")
 parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset", dest="OFFSET", default=0)
 parser.add_argument("-g", "--group", action="store_true", help="Display output entries in alphabetic groups separated by line breaks and section headings")
+parser.add_argument("-w", "--word-sort", action="store_true", help="Sorts entries using word-by-word alphabetic order (de Marco > dean)", default=False, dest="word")
+parser.add_argument("-l", "--letter-sort", action="store_true", help="Sorts entries using letter-by-letter alphabetic order (dean > de Marco)", default=True, dest="letter")
 args = parser.parse_args()
 
 index={}
@@ -34,7 +36,12 @@ for line in comments_file:
 
 k_prev=None
 
-for k in sorted(index, key=lambda s: s.lower()): # Sort dict by key
+if args.word:
+    index_sorted = sorted(index, key=lambda s: s.lower())
+else:
+    index_sorted = sorted(index, key=lambda s: s.replace(',','').replace(' ','').lower())
+
+for k in index_sorted:
     k_this=k[0].upper()
     index[k].sort() # Sort each value list numerically
     vlist = []

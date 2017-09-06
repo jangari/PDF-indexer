@@ -58,7 +58,7 @@ The user will then need to undertake some post-processing to prepare this text f
 
 ### Synopsis
 
-`python generate-index.py INPUT_FILE [-o/--offset OFFSET]`
+`generate-index.py [-h] [-o OFFSET] [-g] [-w] [-l] input_file`
 
 The output will be printed to the shell or can be redirected to a file.
 
@@ -136,7 +136,30 @@ comedy | humor theory	10, 10-25
 comedy | satire	11, 25
 computing	34-37
 ```
+
 This output style is disabled by default.
+
+### Word-by-word and letter-by-letter alphabetic sorting
+
+Publishers (and authors) differ as to whether they prefer word-by-word alphabetic order, or letter-by-letter. PDF Indexer supports both outputs with the `-l` (letter sort, default) and `-w` (word sort) flags.
+
+#### Word-by-word sort order
+
+  - de Maria
+  - dean
+  - dematerial
+  - I, Robot
+  - In a pinch
+  - Isaacs
+
+#### Letter-by-letter
+
+  - dean
+  - de Maria
+  - dematerial
+  - In a pinch
+  - I, Robot
+  - Isaacs
 
 ## Limitations
 
