@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 import re, sys
 import argparse
@@ -28,7 +28,7 @@ for line in comments_file:
         vp = re.compile("([0-9]+)(-|n)") # Parse the start number of the page range to be the sort value
         vm = vp.search(v)
         v_sort = int(vm.group(1))
-    if index.has_key(k): # Don't duplicate entries
+    if k in index: # Don't duplicate entries
         if not (v_sort,v) in index[k]:
             index[k].append((v_sort,v)) # Don't duplicate pages
     else:
@@ -50,5 +50,5 @@ for k in index_sorted:
     if args.group:
         if k_this != k_prev:
             k_prev = k_this
-            print '\n'+k_this
-    print k+'\t'+', '.join(map(str, vlist)) # Print the list of page refs
+            print('\n'+k_this)
+    print(k+'\t'+', '.join(map(str, vlist))) # Print the list of page refs
