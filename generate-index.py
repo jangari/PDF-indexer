@@ -73,3 +73,54 @@ for k in index_sorted:
             k_prev = k_this
             print('\n'+k_this)
     print(k+args.separator+', '.join(map(str, vlist))) # Print the list of page refs
+
+#TODO: Use this function to allow for subheadings:
+# def output(d,sep=""):
+#     for k in sorted(d):
+#         if type(d[k]) != dict:
+#             vlist=[]
+#             for vtuple in d[k]:
+#                 vlist.append(vtuple[1])
+#             print(sep+k+"\t"+','.join(map(str,vlist)))
+#         else:
+#             print(k)
+#             output(d[k],sep=" – ")
+#
+# And this for entering subheading data into the dict cleanly:
+# import re
+# index={}
+# comments_file = open('input','r')
+# for line in comments_file:
+#     v,k = line.split('\t') # Split index reference into page ref and text
+#     k = k.rstrip() # Strip any whitespace
+#     v = int(v)
+#     v_sort = v # For single pages, v_sort is simply v.
+#
+#     pattern = re.compile("(.*)\s+\(([0-9]+(n[0-9]+|\-[0-9]+))\)")
+#     if re.match(pattern,k):
+#         match = pattern.search(k)
+#         k = match.group(1)
+#         v = match.group(2)
+#         vp = re.compile("([0-9]+)(-|n)") # Parse the start number of the page range to be the sort value
+#         vm = vp.search(v)
+#         v_sort = int(vm.group(1))
+#
+#     sh_pattern=re.compile("(.*?)\s\|\s(.*)")
+#     if re.match(sh_pattern,k):
+#         sh_match=sh_pattern.search(k)
+#         k = sh_match.group(1).rstrip().lstrip()
+#         sh = sh_match.group(2).rstrip().lstrip()
+#         if k in index:
+#             if sh in index[k]:
+#                 if not (v_sort,v) in index[k][sh]:
+#                     index[k][sh]=[(v_sort,v)]
+#             else:
+#                 index[k][sh]=[(v_sort,v)]
+#         else:
+#             index[k]={sh:[(v_sort,v)]}
+#     else:
+#         if k in index: # Don't duplicate entries
+#             if not (v_sort,v) in index[k]:
+#                 index[k].append((v_sort,v)) # Don't duplicate pages
+#         else:
+#             index[k] = [(v_sort,v)] # Add dict entry if not already present
