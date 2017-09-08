@@ -44,8 +44,8 @@ for line in comments_file:
         vm = vp.search(v)
         v_sort = int(vm.group(1))
 
-	if args.elide and '-' in v:
-	    vstart, vend = v.split('-')
+        if args.elide and '-' in v:
+            vstart, vend = v.split('-')
             vstart, vend = elide(vstart,vend)
             v = vstart+"-"+vend
 
