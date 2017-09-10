@@ -61,31 +61,32 @@ The user will then need to undertake some post-processing to prepare this text f
 Help text:
 
 ```
-usage: generate-index.py [-h] [-o OFFSET] [-g] [-w] [-l] [-s SEPARATOR] input_file
+usage: generate-index.py [-h] [-o OFFSET] [-s SEPARATOR] [-g] [-w] [-l] [-e]
+                         [-c] [-t]
+                         input_file
 
 positional arguments:
   input_file
 
 optional arguments:
-  -h, --help                              show this help message and exit
-
-  -o OFFSET, --offset OFFSET              Set frontmatter offset for page numbers to be correctly 
-                                          rendered.
-
-  -g, --group                             Display output entries in alphabetic groups separated
-                                          by line breaks and section headings.
-
-  -w, --word-sort                         Sorts entries using word-by-word alphabetic order (de
-                                          Marco > dean).
-
-  -l, --letter-sort                       Sorts entries using letter-by-letter alphabetic order
-                                          (dean > de Marco). True by default.
-
-  -s SEPARATOR, --separator SEPARATOR     Set output field separator between index entry and
-                                          locator. Default is a tab character.
-
-  -e, --elide                             Elide numbers in page ranges where possible (excluding
-                                          teens).
+  -h, --help            show this help message and exit
+  -o OFFSET, --offset OFFSET
+                        Set frontmatter offset for page numbers to be
+                        correctly rendered.
+  -s SEPARATOR, --separator SEPARATOR
+                        Set output field separator between index entry and
+                        locator. Default is a tab character.
+  -g, --group           Display output entries in alphabetic groups separated
+                        by line breaks and section headings.
+  -w, --word-sort       Sorts entries using word-by-word alphabetic order (de
+                        Marco > dean).
+  -l, --letter-sort     Sorts entries using letter-by-letter alphabetic order
+                        (dean > de Marco). True by default.
+  -e, --elide           Elide numbers in page ranges where possible (excluding
+                        teens).
+  -c, --conjunctions    Ignore conjunctions (of, from, with, and) in sorting
+                        subheadings.
+  -t, --the             Ignore 'the' when sorting entries.
 ```
 
 The output will be printed to the shell or can be redirected to a file.
@@ -205,11 +206,38 @@ To reference a note, enter the page number for the reference followed by `n` and
 
 PDF Indexer supports a custom output field separator using the `-s/--separator` flag. The default is a tab character, but this could be any string.
 
+### Subheadings
+PDF Indexer supports subheadings using the syntax `heading | subheading`. Subheadings are output as an indented list which is itself independently ordered. Subheading lists are additionally able to be sorted ignoring conjunctions such as in, and, of and so on., using the `-c/--conjunctions` flag discussed below.
+
+### Ignoring 'The' in entries
+Some style guides will recommend sorting the index entries ignoring 'the', for example:
+
+```
+W
+Warnke, Mike    4
+Wiseguys    5
+The Wittenburg Door 3
+```
+
+PDF Indexer follows this behaviour using the `-t/--the` flag. Default behaviour is to sort the index for occurrences of 'the'.
+
+### Ignoring conjunctions in subheading lists
+
+Some style guides will recommend that subheading lists are sorted ignoring conjunctions and prepositions such as 'on', 'of', 'and' and so forth. For example:
+
+```
+Mormons
+ - in America   13
+ - beliefs 8-9
+ - and Evangelicals	45
+ - history    8
+```
+
+PDF Indexer supports this using the flag `-c/--conjunctions`. Note that this only affects subheading sorting, and not main entry sorting, although main entries should not typically begin with conjunctions or prepositions, as they are intended to be read as a relationship between the subheading and the main entry.
+
+This behaviour is disabled by default.
+
 ## Limitations
-
-### No support for subheadings
-
-As mentioned above, there is no built-in support for subheadings, but see above for a simple workaround. A future version will accept the `|`-separated comment as suggested above, and render the output with a top-level heading with subheadings.
 
 ### No support for multiple index styles
 
