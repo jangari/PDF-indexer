@@ -3,11 +3,11 @@
 import re, argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset for page numbers to be correctly rendered.", dest="OFFSET", default=0)
+parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset for page numbers to be correctly rendered.", dest="offset", default=0)
 parser.add_argument("-s", "--separator", type=str, help="Set output field separator between index entry and locator. Default is a tab character.", default="\t", dest="separator")
 parser.add_argument("-g", "--group", action="store_true", help="Display output entries in alphabetic groups separated by line breaks and section headings.")
-parser.add_argument("-w", "--word-sort", action="store_true", help="Sorts entries using word-by-word alphabetic order (de Marco > dean).", default=False, dest="word")
-parser.add_argument("-l", "--letter-sort", action="store_true", help="Sorts entries using letter-by-letter alphabetic order (dean > de Marco). True by default.", default=True, dest="letter")
+parser.add_argument("-w", "--word-sort", action="store_true", help="Default. Sorts entries using word-by-word alphabetic order (de Marco > dean).", default=True, dest="word")
+parser.add_argument("-l", "--letter-sort", action="store_true", help="Sorts entries using letter-by-letter alphabetic order (dean > de Marco).", default=False, dest="letterSort")
 parser.add_argument("-e", "--elide", action="store_true", help="Elide numbers in page ranges where possible (excluding teens).", dest="elide")
 parser.add_argument("-c", "--conjunctions", action="store_true", help="Ignore conjunctions (of, from, with, and) in sorting subheadings.", dest="conjunctions")
 parser.add_argument("-t", "--the", action="store_true", help="Ignore 'the' when sorting entries.", dest="ignoreThe")
@@ -29,7 +29,7 @@ def elide(start,end):
 
 index={}
 comments_file=open(args.input_file,'r')
-OFFSET=args.OFFSET
+OFFSET=args.offset
 
 for line in comments_file:
     v,k = line.split('\t') # Split index reference into page ref and text
@@ -71,34 +71,34 @@ for line in comments_file:
         else:
             index[k] = [(v_sort,v)] # Add dict entry if not already present
 
-stop_words = {"and ": "", "in ": "", "of ": "", "with ": "", "on ": "", "by ": "", "at ": "", "from ": "", "about": ""}
-punct = {",": "", " ": "", "'": ""}
 def repl_all(text,dic):
     dic = dict((re.escape(k), v) for k, v in dic.items())
     pattern = re.compile("|".join(dic.keys()))
     return pattern.sub(lambda m: dic[re.escape(m.group(0))], text.lower())
 
-def ignore_the(d):
-    return sorted(d,key=lambda s: repl_all(s,{'the ':''}).lower())
-
-def word_sort(d):
-    return sorted(d,key=lambda s: s.lower())
-
-def letter_sort(d):
-    return sorted(d,key=lambda s: repl_all(s,punct).lower())
-
-def ignoreConjunctions(d):
-    return sorted(d,key=lambda s: repl_all(s,stop_words).lower())
-
-keys=letter_sort(index)
-if args.word:
-    keys=word_sort(index)
-if args.ignoreThe:
-    keys=ignore_the(keys)
-
+def dic_sort(dic,letterSort=False,ignoreThe=False,ignoreConj=False):
+    conjunctions={"and ": "", "in ": "", "of ": "", "with ": "", "on ": "", "by ": "", "at ": "", "from ": "", "about": ""}
+    punct={",": "", " ": "", "'": "","-":""}
+    the={"the ":""}
+    if letterSort and ignoreThe and ignoreConj:
+        return sorted(dic, key=lambda s: repl_all(repl_all(repl_all(s.lower(),conjunctions),the),punct))
+    elif letterSort and ignoreThe:
+        return sorted(dic, key=lambda s: repl_all(repl_all(s.lower(),the),punct))
+    elif letterSort and ignoreConj:
+        return sorted(dic, key=lambda s: repl_all(repl_all(s.lower(),conjunctions),punct))
+    elif ignoreThe and ignoreConj:
+        return sorted(dic, key=lambda s: repl_all(repl_all(s.lower(),conjunctions),the))
+    elif letterSort:
+        return sorted(dic, key=lambda s: repl_all(s.lower(),punct))
+    elif ignoreThe:
+        return sorted(dic, key=lambda s: repl_all(s.lower(),the))
+    elif ignoreConj:
+        return sorted(dic, key=lambda s: repl_all(s.lower(),conjunctions))
+    else:
+        return sorted(dic, key=lambda s: s.lower())
 k_prev=None
 
-
+keys = dic_sort(index, letterSort=args.letterSort, ignoreThe=args.ignoreThe)
 for k in keys:
     if args.ignoreThe:
         k_this=repl_all(k.lower(),{'the ':''})[0].upper()
@@ -115,11 +115,7 @@ for k in keys:
         print(k+args.separator+','.join(map(str,vlist)))
     else:
         print(k)
-        skeys=letter_sort(index[k])
-        if args.word:
-            skeys=word_sort(index[k])
-        if args.conjunctions:
-            skeys=ignoreConjunctions(skeys)
+        skeys = dic_sort(index[k], letterSort=args.letterSort, ignoreThe=args.ignoreThe, ignoreConj=args.conjunctions)
         for sk in skeys:
                 vlist=list()
                 for vtuple in sorted(index[k][sk]):
