@@ -78,10 +78,10 @@ optional arguments:
                         locator. Default is a tab character.
   -g, --group           Display output entries in alphabetic groups separated
                         by line breaks and section headings.
-  -w, --word-sort       Sorts entries using word-by-word alphabetic order (de
-                        Marco > dean).
+  -w, --word-sort       Default. Sorts entries using word-by-word alphabetic
+                        order (de Marco > dean).
   -l, --letter-sort     Sorts entries using letter-by-letter alphabetic order
-                        (dean > de Marco). True by default.
+                        (dean > de Marco).
   -e, --elide           Elide numbers in page ranges where possible (excluding
                         teens).
   -c, --conjunctions    Ignore conjunctions (of, from, with, and) in sorting
