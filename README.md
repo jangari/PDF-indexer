@@ -54,15 +54,14 @@ humor theory	10
 satire	11, 15
 ```
 
-The user will then need to undertake some post-processing to prepare this text for their publisher. They will need to separate it into alphabetic blocks, construct any desired (sub)-heading hierarchy, and they should also conduct thorough quality control before submitting the index to their publisher. PDF Indexer only collates and sorts the indexes from a single page reference per line, to a proper index style with an index reference and a list of page references.
-
 ### Synopsis
 
 Help text:
 
 ```
+
 usage: generate-index.py [-h] [-o OFFSET] [-s SEPARATOR] [-g] [-w] [-l] [-e]
-                         [-c] [-t]
+                         [-c] [-t] [-m]
                          input_file
 
 positional arguments:
@@ -75,9 +74,9 @@ optional arguments:
                         correctly rendered.
   -s SEPARATOR, --separator SEPARATOR
                         Set output field separator between index entry and
-                        locator. Default is a tab character.
+                        locator. Default is two spaces.
   -g, --group           Display output entries in alphabetic groups separated
-                        by line breaks and section headings.
+                        by line breaks and (with -gg) section headings.
   -w, --word-sort       Default. Sorts entries using word-by-word alphabetic
                         order (de Marco > dean).
   -l, --letter-sort     Sorts entries using letter-by-letter alphabetic order
@@ -87,6 +86,8 @@ optional arguments:
   -c, --conjunctions    Ignore conjunctions (of, from, with, and) in sorting
                         subheadings.
   -t, --the             Ignore 'the' when sorting entries.
+  -m, --mac             Sorts Mc names (McIntosh) along with corresponding Mac
+                        names (MacIntosh).
 ```
 
 The output will be printed to the shell or can be redirected to a file.
@@ -97,9 +98,9 @@ Page ranges are complex for indexes, and publishers vary in the expected style (
 
 The fact that the page range string overrides the actual page number of the comment has the corollary effect that page range index references need not be comments on the actual section of the page proof PDF; they could go anywhere. 
 
-A comment in a PDF that pertains to a page range may look like this `humor theory (10-25)` and will be output as `humor theory	10-25`, and will sort correctly with respect to other page references for that index.
+A comment in a PDF that pertains to a page range may look like this `humor theory (10-25)` and will be output as `humor theory  10-25`, and will sort correctly with respect to other page references for that index.
 
-PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. The regular expression for this capture is `.*\s+\(([0-9]+-[0-9]+)\)`. When PDF Indexer comes across index text matching this expression, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
+PDF Indexer expects a page range of exactly this pattern: two page numbers separated by a dash `-` inside parentheses after the index text and one or more whitespace characters. When PDF Indexer comes across index text matching this pattern, the numbers are parsed out of the text and are used in place of the page number. The index text is also stored without the page range or the trailing whitespace.
 
 So that the sort works properly, PDF Indexer extracts the first page number of the range and uses it as the sort value in the tuple. When outputting page numbers, the tuples in the list are sorted numberically by this sort value, and the page reference value is what is ultimately printed.
 
@@ -111,52 +112,40 @@ This output style is disabled by default.
 
 ### Subheadings
 
-Back-of-book indexes often contain subheadings of index references. The above example might be output as follows (extended for other headings not within comedy):
+PDF Indexer supports subheadings using the syntax `heading <separator> subheading`, where `<separator>` is one of `|`, `:` or `-`. Subheadings are output as an indented list which is itself independently ordered, using the same sorting options configured with the flags `-l`, `-m` and `-t`. Subheading lists are additionally able to be sorted ignoring conjunctions such as `in`, `and`, `of` and so on, using the `-c/--conjunctions` flag discussed below.
+
+Sample output:
 
 ```
-Australia	65
-Argentina	70, 76
+Australia  65
+Argentina  70, 76
 comedy
-   comedians	13
-   humor theory	10, 10-25
-   satire	11, 25
-computing	34-37
+  comedians  13
+  humor theory  10, 10-25
+  satire  11, 25
+computing  34-37
 ```
 
-This format is not currently support by default by PDF Indexer, however a simple manual workaround exists. Prepend the annotations of subheadings with their outer heading and a meaningful separator, such as a pipe `|` character, as follows:
+This behaviour cannot be suppressed (at the moment). If a PDF annotation contains one of the separators with a space on either side, it will be parsed into an entry and a subheading. Entries that coincidentally contain that string
 
-```
-10	comedy | humor theory
-10	comedy | humor theory (10-25)
-11	comedy | satire
-13	comedy | comedians
-15	comedy | satire
-34	computing (34-37)
-65	Australia
-70	Argentina
-76	Argentina
-```
+### Front-matter offset
 
-As PDF Indexer sorts the index keys alphabetically, these subheadings will appear adjacent to one another and so converting these into a top-level heading and subheadings will be a trivial modification:
+Depending on the PDF program and method of exporting comments, page numbers may be consistently incorrect due to the presence of frontmatter pages. PDF Indexer has an optional argument `-o/--offset` which sets the amount of frontmatter offset to account for. A negative number may also be entered to account for PDF files that do not start at page 1. You should thoroughly check the output for accuracy and apply this option if needed.
+
+### Grouping output by letter
+
+PDF Indexer supports optional grouping of the output by letter using the flag `-g/--group`. With this flag set, the above example will be output as:
 
 ```
 Australia	65
 Argentina	70, 76
+
 comedy | comedians	13
 comedy | humor theory	10, 10-25
 comedy | satire	11, 25
 computing	34-37
 ```
-
-### Front-matter offset
-
-A known-issue is that PDF comments contain page references beginning from the start of the PDF file, and those page numbers may differ from the actual page numbers due to the presence of front-matter. PDF Indexer has an optional argument `-o/--offset` which sets the amount of frontmatter offset to account for. A negative number may also be entered to account for PDF files that do not start at page 1.
-
-A future version of this script would calculate the offset needed by parsing the PDF document.
-
-### Grouping output by letter
-
-PDF Indexer supports optional grouping of the output by letter using the flag `-g/--group`. With this flag set, the above example will be output as:
+Adding a second `-g` flag will also print out the initial letter as a capital. i.e.:
 
 ```
 A
@@ -170,11 +159,11 @@ comedy | satire	11, 25
 computing	34-37
 ```
 
-This output style is disabled by default.
-
 ### Word-by-word and letter-by-letter alphabetic sorting
 
-Publishers (and authors) differ as to whether they prefer word-by-word alphabetic order, or letter-by-letter. PDF Indexer supports both outputs with the `-l` (letter sort, default) and `-w` (word sort) flags.
+Publishers (and authors) differ as to whether they prefer word-by-word alphabetic order, or letter-by-letter. PDF Indexer will sort output word-by-word by default. Applying the `-l/--letter` flag will enable letter-by-letter sorting. This effectively sorts the index as though there were no spaces or punctuation in the index entry text.
+
+This setting applies to both entries and subentries.
 
 #### Word-by-word sort order
 
@@ -200,14 +189,11 @@ Indexes pointing to notes are supported in the same manner as page ranges, by us
 
 To reference a note, enter the page number for the reference followed by `n` and optionally, the note number if there are multiple notes. E.g.:
 
-`10	computing (10n4)` will be output as `computing	10n4` and `10	computing (10n)` will be output as `computing	10n`. As with page ranges, note references will be sorted accurately on the basis of the page number.
+`10	computing (10n4)` will be output as `computing	10 n. 4` and `10	computing (10n)` will be output as `computing	10 n.`. As with page ranges, note references will be sorted accurately on the basis of the page number.
 
 ### Custom output separator
 
-PDF Indexer supports a custom output field separator using the `-s/--separator` flag. The default is a tab character, but this could be any string.
-
-### Subheadings
-PDF Indexer supports subheadings using the syntax `heading | subheading`. Subheadings are output as an indented list which is itself independently ordered. Subheading lists are additionally able to be sorted ignoring conjunctions such as in, and, of and so on., using the `-c/--conjunctions` flag discussed below.
+PDF Indexer supports a custom output field separator using the `-s/--separator` flag. The default is two spaces ("  "), but this could be any string. 
 
 ### Ignoring 'The' in entries
 Some style guides will recommend sorting the index entries ignoring 'the', for example:
@@ -219,7 +205,7 @@ Wiseguys    5
 The Wittenburg Door 3
 ```
 
-PDF Indexer follows this behaviour using the `-t/--the` flag. Default behaviour is to sort the index for occurrences of 'the'.
+PDF Indexer allows for this behaviour using the `-t/--the` flag. Setting this option affects both entries and subentries.
 
 ### Ignoring conjunctions in subheading lists
 
@@ -236,6 +222,12 @@ Mormons
 PDF Indexer supports this using the flag `-c/--conjunctions`. Note that this only affects subheading sorting, and not main entry sorting, although main entries should not typically begin with conjunctions or prepositions, as they are intended to be read as a relationship between the subheading and the main entry.
 
 This behaviour is disabled by default.
+
+### Sorting "Mc" with "Mac"
+
+Traditionally, names such as McCleod, McIntyre and McDonald are sorted as though they were spelled MacCleod, MacIntyre and MacDonald, the reason being that it used to be largely arbitrary which spelling was used, and that it was best to have them sorted along with one another.
+
+PDF Indexer supports this with the `-m/--mac` flag. This sorting will apply both to entries and subentries.
 
 ## Limitations
 
