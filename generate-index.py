@@ -62,7 +62,7 @@ for line in comments_file:
             vstart, vend = elide(vstart,vend)
             v = vstart+"-"+vend
 
-    sh_pattern=re.compile("(.*?)\s\|\s(.*)")
+    sh_pattern=re.compile("(.*?)\s?[:\|-]\s(.*)")
     if re.match(sh_pattern,k):
         sh_match=sh_pattern.search(k)
         k = sh_match.group(1).rstrip().lstrip()
