@@ -4,7 +4,7 @@ import re, argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--offset", type=int, help="Set frontmatter offset for page numbers to be correctly rendered.", dest="offset", default=0)
-parser.add_argument("-s", "--separator", type=str, help="Set output field separator between index entry and locator. Default is a tab character.", default="\t", dest="separator")
+parser.add_argument("-s", "--separator", type=str, help="Set output field separator between index entry and locator. Default is two spaces.", default="  ", dest="separator")
 parser.add_argument("-g", "--group", action="count", help="Display output entries in alphabetic groups separated by line breaks and (with -gg) section headings.")
 parser.add_argument("-w", "--word-sort", action="store_true", help="Default. Sorts entries using word-by-word alphabetic order (de Marco > dean).", default=True, dest="word")
 parser.add_argument("-l", "--letter-sort", action="store_true", help="Sorts entries using letter-by-letter alphabetic order (dean > de Marco).", default=False, dest="letterSort")
@@ -118,9 +118,9 @@ for k in keys:
         if args.group == 2:
             print(k_this)
         k_prev = k_this
-    print(k+'  '+', '.join(map(str,vlist)))
+    print(k+separator+', '.join(map(str,vlist)))
     for subentry in dic_sort(index[k]['subentries'], letterSort=args.letterSort, ignoreThe=args.ignoreThe, ignoreConj=args.conjunctions, sortMac=args.sortMac):
         vlist=[]
         for v_sort,v in sorted(index[k]['subentries'][subentry]):
             vlist.append(v)
-        print('  '+subentry+'  '+', '.join(map(str,vlist)))
+        print('  '+subentry+separator+', '.join(map(str,vlist)))
