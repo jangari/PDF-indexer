@@ -118,9 +118,9 @@ for k in keys:
         if args.group == 2:
             print(k_this)
         k_prev = k_this
-    print(k+separator+', '.join(map(str,vlist)))
+    print(k+args.separator+', '.join(map(str,vlist)))
     for subentry in dic_sort(index[k]['subentries'], letterSort=args.letterSort, ignoreThe=args.ignoreThe, ignoreConj=args.conjunctions, sortMac=args.sortMac):
         vlist=[]
         for v_sort,v in sorted(index[k]['subentries'][subentry]):
             vlist.append(v)
-        print('  '+subentry+separator+', '.join(map(str,vlist)))
+        print('  '+subentry+args.separator+', '.join(map(str,vlist)))
