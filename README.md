@@ -1,6 +1,8 @@
 # PDF Indexer
 Generates an end-of-book index from an exported list of PDF annotations
 
+![Cover](images/cover.png)
+
 ## Acknowledgements
 
 Written by Aidan Wilson (@jangari) on 2017-09-04 to assist in the generation of an end-of-book index for an academic book.
@@ -98,7 +100,7 @@ comedy
   comedians  13
   humor theory  10, 10-25
   satire  11, 25
-computing  34-37
+computing  34-7
 ```
 
 This behaviour cannot be suppressed (at the moment). If a PDF annotation contains one of the separators with a space on either side, it will be parsed into an entry and a subheading. Entries that coincidentally contain that string
@@ -112,26 +114,26 @@ Depending on the PDF program and method of exporting comments, page numbers may 
 PDF Indexer supports optional grouping of the output by letter using the flag `-g/--group`. With this flag set, the above example will be output as:
 
 ```
-Australia	65
-Argentina	70, 76
+Australia  65
+Argentina  70, 76
 
-comedy | comedians	13
-comedy | humor theory	10, 10-25
-comedy | satire	11, 25
-computing	34-37
+  comedians  13
+  humor theory  10, 10-25
+  satire  11, 25
+computing  34-7
 ```
 Adding a second `-g` flag will also print out the initial letter as a capital. i.e.:
 
 ```
 A
-Australia	65
-Argentina	70, 76
+Australias  65
+Argentina  70, 76
 
 C
-comedy | comedians	13
-comedy | humor theory	10, 10-25
-comedy | satire	11, 25
-computing	34-37
+  comedians  13
+  humor theory  10, 10-25
+  satire  11, 25
+computing  34-7
 ```
 
 ### Word-by-word and letter-by-letter alphabetic sorting
@@ -175,9 +177,9 @@ Some style guides will recommend sorting the index entries ignoring 'the', for e
 
 ```
 W
-Warnke, Mike    4
-Wiseguys    5
-The Wittenburg Door 3
+Warnke, Mike  4
+Wiseguys  5
+The Wittenburg Door  3
 ```
 
 PDF Indexer allows for this behaviour using the `-t/--the` flag. Setting this option affects both entries and subentries.
@@ -188,10 +190,10 @@ Some style guides will recommend that subheading lists are sorted ignoring conju
 
 ```
 Mormons
- - in America   13
- - beliefs 8-9
- - and Evangelicals	45
- - history    8
+  in America  13
+  beliefs  8-9
+  and Evangelicals  45
+  history  8
 ```
 
 PDF Indexer supports this using the flag `-c/--conjunctions`. Note that this only affects subheading sorting, and not main entry sorting, although main entries should not typically begin with conjunctions or prepositions, as they are intended to be read as a relationship between the subheading and the main entry.
