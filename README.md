@@ -15,44 +15,19 @@ PDF Indexer Generates tab-delimited text formatted for a book index, with refere
 
 PDF Indexer takes as its input an exported tab-delimited report of a PDF file's comments and their respective page numbers. It is expected that the user will annotate a PDF file, for example a page proof of a book manuscript, and manually (or programmatically, or however they should choose to) annotate index locations with comments. One way to do this is to use Adobe Acrobat to enter comments on the text, and to use Adobe Actions, or another method, to export the comments with their pages numbers. For Mac users, Automator has an action for PDF files that will export PDF annotations, and so a small Automator script could be configured to generate the list of index references.
 
-### Annotating a PDF
-
 Begin by opening the PDF file that requires an index in a program such as Adobe Acrobat, Apple Preview, or some other program that allows you to enter notes on the text. Apple Preview is the tool used for the following screenshots but the process is basically the same in other programs and consists of the following:
 
 1. Find a reference to index
 1. Highlight it
 1. Add a note to it with the desired index text and optionally a page range (if it is a range of pages rather than the single page containing the highlight)
+1. When all desired index locations have been annotated, export the annotations to a text file (an automator script can be configured to do this)
+1. Optionally fix any annotations in the text file
+1. Pass into index script and direct output to text file
+1. Thoroughly check index text file for errors
 
-The preview sidebar can be set to show all highlights and their notes from the View menu.
+The entire process is demonstrated in the gif below.
 
-![find-a-reference][screenshot1]
-![highlight][screenshot2]
-![annotate][screenshot3]
-![view_annotations][screenshot4]
-
-[screenshot1]:images/screenshot1.png
-[screenshot2]:images/screenshot2.png
-[screenshot3]:images/screenshot3.png
-[screenshot4]:images/screenshot4.png
-
-When you have fully annotated your document, you need to find a way to export those annotations. There may be several methods. One that I have used is to configure an Automator application that takes a pdf file and runs the 'Export PDF Annotations' action. 
-
-Here is a very brief example of a list of index references that is output by this process.
-
-```
-10	humor theory
-11	satire
-13	comedians
-15	satire
-```
-
-This kind of format is not suitable for an index. An index is an alphabetically sorted list of index terms (such as *comedy*, *satire* in the example here) followed by an exhaustive list of page numbers or ranges. PDF Indexer generates that format from the exported PDF annotations. The above, therefore, will generate:
-
-```
-comedians	13
-humor theory	10
-satire	11, 15
-```
+![PDF index process](images/PDF_index_process.gif)
 
 ### Synopsis
 
